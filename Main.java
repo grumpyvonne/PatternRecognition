@@ -47,6 +47,7 @@ public class Main {
         };
         Pattern pattern1 = new Pattern(string1);
         Pattern pattern11 = new Pattern(string11);
+        pattern11.getVector().print();
         Pattern pattern2 = new Pattern(string2);
         Pattern pattern22 = new Pattern(string22);
         Pattern pattern3 = new Pattern(string3);
@@ -64,5 +65,7 @@ public class Main {
         network.learn();
         System.out.println("ВЕСА: ");
         network.getWeights().print();
+        System.out.println("поиск: ");
+        network.searchPatternByX(pattern1);
     }
 }
