@@ -5,6 +5,10 @@ public class Network {
     private List<Pattern> patterns;
     private List<Matrix> listOfWeights;
     private Matrix weights;
+    private int rowsXToY;
+    private int columnsXtoY;
+    private int rowsYToX;
+    private int columnsYtoX;
 
     public Network() {
         patterns = new ArrayList<>();
@@ -12,7 +16,6 @@ public class Network {
     }
 
     public void learn() {
-//        for(int i = 0; i < patterns.size(); i++){
         int i = 0;
         while (i < patterns.size()) {
             Pattern firstPattern = patterns.get(i);
@@ -32,14 +35,10 @@ public class Network {
         Matrix S = firstPattern.getVector();
         Matrix T = secondPattern.getVector();
         Matrix W = S.transpose().multiply(T);
-//        System.out.println("Образ S: ");
-//        S.print();
-////        System.out.println("S t: ");
-////        S.transpose().print();
-//        System.out.println("Ассоциируемый с ним образ T: ");
-//        T.print();
-//        System.out.println("Их веса W: ");
-//        W.print();
+        this.rowsXToY = firstPattern.getPatternMatrix().getMatrix().length;
+        this.columnsXtoY = firstPattern.getPatternMatrix().getMatrix()[0].length;
+        this.rowsYToX = secondPattern.getPatternMatrix().getMatrix().length;
+        this.columnsYtoX = secondPattern.getPatternMatrix().getMatrix()[0].length;
 
         listOfWeights.add(W);
     }
@@ -56,30 +55,30 @@ public class Network {
         int energyPast = -1;
         int energy = 0;
         int iteration = 0;
+        Matrix outputFirst = outputFirstInputSecond(pattern.getVector());
         while (energy != energyPast) {
             energyPast = energy;
-            Matrix outputFirst = outputFirstInputSecond(pattern.getVector());
             Matrix outputSecond = outputSecondInputFirst(outputFirst);
+            outputFirst = outputSecond.multiply(weights);
+            outputFirst = activationFunction(outputFirst);
             energy = calculateEnergy(outputFirst, outputSecond);
             iteration++;
-            if (energy == energyPast) {
-                outputSecond.print();
-            }
         }
+//        outputFirst.print();
+        System.out.println("Restored pattern: ");
+        printPatternY(outputFirst);
         System.out.println("Number of iterations: " + iteration);
     }
 
     private Matrix outputFirstInputSecond(Matrix inputVector) {
         Matrix Y = inputVector.multiply(weights);
         Y = activationFunction(Y);
-        System.out.println("Y " + Y.getMatrix().length + " " + Y.getMatrix()[0].length);
         return Y;
     }
 
     private Matrix outputSecondInputFirst(Matrix inputVector) {
         Matrix X = inputVector.multiply(weights.transpose());
         X = activationFunction(X);
-        System.out.println("X " + X.getMatrix().length + " " + X.getMatrix()[0].length);
         return X;
     }
 
@@ -96,8 +95,8 @@ public class Network {
 
     private int calculateEnergy(Matrix outputFirstLayer, Matrix outputSecondLayer) {
         int energy = 0;
-
-        Matrix E = outputFirstLayer.multiply(weights.transpose()).multiply(outputSecondLayer.transpose());
+        Matrix temp = outputFirstLayer.multiply(weights.transpose());
+        Matrix E = temp.multiply(outputSecondLayer.transpose());
         for (int i = 0; i < E.getMatrix().length; i++) {
             for (int j = 0; j < E.getMatrix()[0].length; j++) {
                 energy += E.getMatrix()[i][j];
@@ -106,8 +105,34 @@ public class Network {
         return energy;
     }
 
+    private void printPatternY(Matrix vector) {
+        int[][] array = new int[rowsYToX][columnsYtoX];
+        int k = 0;
+        for (int i = 0; i < rowsYToX; i++) {
+            for (int j = 0; j < columnsYtoX; j++) {
+                if (k == vector.getMatrix()[0].length) break;
+                array[i][j] = vector.getMatrix()[0][k];
+                k++;
+            }
+        }
+        Matrix output = new Matrix(array);
+        printPattern(output);
+    }
+
+    private void printPattern(Matrix bipolarMatrix) {
+        for (int i = 0; i < bipolarMatrix.getMatrix().length; i++) {
+            for (int j = 0; j < bipolarMatrix.getMatrix()[0].length; j++) {
+                if (bipolarMatrix.getMatrix()[i][j] == 1) {
+                    System.out.print("@");
+                } else if(bipolarMatrix.getMatrix()[i][j]==-1){
+                    System.out.print(".");
+                }
+            }
+            System.out.println("");
+        }
+    }
+
     public Matrix getWeights() {
         return weights;
     }
-
 }

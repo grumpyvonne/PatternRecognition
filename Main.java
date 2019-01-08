@@ -45,9 +45,15 @@ public class Main {
                 "@@@@@.",
                 "@@..@@"
         };
+        String[] test = {
+                "@@@@.",
+                "@@@@@",
+                "@@..."
+        };
+        Pattern testP = new Pattern(test);
         Pattern pattern1 = new Pattern(string1);
         Pattern pattern11 = new Pattern(string11);
-        pattern11.getVector().print();
+        pattern1.getVector().print();
         Pattern pattern2 = new Pattern(string2);
         Pattern pattern22 = new Pattern(string22);
         Pattern pattern3 = new Pattern(string3);
@@ -63,9 +69,10 @@ public class Main {
         network.addPattern(pattern4);
         network.addPattern(pattern44);
         network.learn();
-        System.out.println("ВЕСА: ");
-        network.getWeights().print();
+//        System.out.println("ВЕСА: ");
+//        network.getWeights().print();
         System.out.println("поиск: ");
-        network.searchPatternByX(pattern1);
+        network.searchPatternByX(pattern4);
+        network.searchPatternByX(testP);
     }
 }
