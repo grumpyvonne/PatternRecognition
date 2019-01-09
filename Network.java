@@ -1,3 +1,4 @@
+//Автор: Шурпач Ольга, группа 621702
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,8 +66,25 @@ public class Network {
             iteration++;
         }
 //        outputFirst.print();
-        System.out.println("Restored pattern: ");
+        System.out.println("Ассоциированный образ: ");
         printPatternY(outputFirst);
+        System.out.println("Number of iterations: " + iteration);
+    }
+    public void searchPatternByY(Pattern pattern) {
+        int energyPast = -1;
+        int energy = 0;
+        int iteration = 0;
+        Matrix outputSecondLayer = outputSecondInputFirst(pattern.getVector());
+        while (energy != energyPast) {
+            energyPast = energy;
+            Matrix outputFirstLayer = outputFirstInputSecond(outputSecondLayer);
+            outputSecondLayer = outputFirstLayer.multiply(weights.transpose());
+            outputSecondLayer = activationFunction(outputSecondLayer);
+            energy = calculateEnergy(outputFirstLayer, outputSecondLayer);
+            iteration++;
+        }
+        System.out.println("Ассоциированный образ: ");
+        printPatternX(outputSecondLayer);
         System.out.println("Number of iterations: " + iteration);
     }
 
@@ -104,6 +122,17 @@ public class Network {
         }
         return energy;
     }
+    private int calculateEnergyY(Matrix outputFirstLayer, Matrix outputSecondLayer) {
+        int energy = 0;
+        Matrix temp = outputFirstLayer.multiply(weights);
+        Matrix E = temp.multiply(outputSecondLayer.transpose());
+        for (int i = 0; i < E.getMatrix().length; i++) {
+            for (int j = 0; j < E.getMatrix()[0].length; j++) {
+                energy += E.getMatrix()[i][j];
+            }
+        }
+        return energy;
+    }
 
     private void printPatternY(Matrix vector) {
         int[][] array = new int[rowsYToX][columnsYtoX];
@@ -118,12 +147,25 @@ public class Network {
         Matrix output = new Matrix(array);
         printPattern(output);
     }
+    private void printPatternX(Matrix vector) {
+        int[][] array = new int[rowsXToY][columnsXtoY];
+        int k = 0;
+        for (int i = 0; i < rowsXToY; i++) {
+            for (int j = 0; j < columnsXtoY; j++) {
+                if (k == vector.getMatrix()[0].length) break;
+                array[i][j] = vector.getMatrix()[0][k];
+                k++;
+            }
+        }
+        Matrix output = new Matrix(array);
+        printPattern(output);
+    }
 
     private void printPattern(Matrix bipolarMatrix) {
         for (int i = 0; i < bipolarMatrix.getMatrix().length; i++) {
             for (int j = 0; j < bipolarMatrix.getMatrix()[0].length; j++) {
                 if (bipolarMatrix.getMatrix()[i][j] == 1) {
-                    System.out.print("@");
+                    System.out.print("#");
                 } else if(bipolarMatrix.getMatrix()[i][j]==-1){
                     System.out.print(".");
                 }

@@ -1,3 +1,4 @@
+//Автор: Шурпач Ольга, группа 621702
 public class Matrix {
     private int rows;
     private int columns;
@@ -37,16 +38,6 @@ public class Matrix {
         return resultMatrix;
     }
 
-    public Matrix multiply(int num) {
-        int[][] newMatrix = new int[rows][columns];
-        for (int row = 0; row < rows; row++) {
-            for (int column = 0; column < columns; column++) {
-                newMatrix[row][column] = num * matrix[row][column];
-            }
-        }
-        Matrix result = new Matrix(newMatrix);
-        return result;
-    }
 
     public Matrix multiply(Matrix secondMatrix) {
         if (secondMatrix.rows != columns) {
@@ -62,18 +53,6 @@ public class Matrix {
         }
         Matrix result = new Matrix(resultMatrix);
         return result;
-    }
-
-    public void print() {
-        for (int row = 0; row < rows; row++) {
-            for (int column = 0; column < columns; column++) {
-                if (Integer.toString(matrix[row][column]).length() == 1) {
-                    System.out.print(" " + matrix[row][column] + " ");
-                } else System.out.print(matrix[row][column] + " ");
-            }
-            System.out.println("");
-        }
-        System.out.println("");
     }
 
     public void checkMatrixSize(Matrix matrix) {

@@ -1,3 +1,4 @@
+//Автор: Шурпач Ольга, группа 621702
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class Pattern {
         for (int lines = 0; lines < string.length; lines++) {
             String line = string[lines];
             for (int col = 0; col < line.length(); col++) {
-                if (line.charAt(col) == '@') {
+                if (line.charAt(col) == '#') {
                     patternMatrix.getMatrix()[lines][col] = 1;
                 } else if (line.charAt(col) == '.') {
                     patternMatrix.getMatrix()[lines][col] = -1;
@@ -45,7 +46,7 @@ public class Pattern {
         for (int lines = 0; lines < string.length; lines++) {
             String line = string[lines];
             for (int column = 0; column < line.length(); column++) {
-                System.out.print(line.charAt(column) + " ");
+                System.out.print(line.charAt(column));
             }
             System.out.println("");
         }
